@@ -33,3 +33,22 @@ def test_config_quotes():
     assert '%%' in desktop_quote('%f')
     assert '\\\\$' in desktop_quote('$HOME')
     assert unit_quote('%h') == '"%%h"'
+
+async def test_host_generated_file_validation(tmp_path, monkeypatch):
+    import shutil
+    from cachyos_mcp.executor import Executor
+    monkeypatch.setenv('HOME', str(tmp_path))
+    settings = Settings(log_directory=str(tmp_path / 'logs'), allowed_project_directories=[str(tmp_path / 'Projects')], allowed_writable_directories=[str(tmp_path / 'Projects'), str(tmp_path / '.local'), str(tmp_path / '.config')])
+    async with Client(create_server(settings)) as client:
+        result = await client.call_tool('create_desktop_entry', {'name': 'example', 'executable': '/usr/bin/true', 'arguments': ['a b', '$HOME', '%f', 'a"b', 'back\\slash'], 'confirmed': True})
+        assert result.structured_content['success']
+        result = await client.call_tool('create_systemd_user_service', {'name': 'example', 'executable': '/usr/bin/true', 'arguments': ['a b', '$HOME', '%h'], 'confirmed': True})
+        assert result.structured_content['success']
+        result = await client.call_tool('create_plasma_widget_project', {'name': 'thermal', 'path': str(tmp_path / 'Projects/widget'), 'confirmed': True})
+        assert result.structured_content['success']
+    commands = [['systemd-analyze', '--user', 'verify', str(tmp_path / '.config/systemd/user/cachyos-mcp-example.service')], ['qmlformat', '-n', str(tmp_path / 'Projects/widget/contents/ui/main.qml')]]
+    if shutil.which('desktop-file-validate'):
+        commands.append(['desktop-file-validate', str(tmp_path / '.local/share/applications/example.desktop')])
+    for argv in commands:
+        result = await Executor(settings).run(argv)
+        assert result['success'], result

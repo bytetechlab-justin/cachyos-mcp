@@ -16,7 +16,7 @@ def register(r):
             if repository:
                 repo_fd = os.open('.git', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
                 os.close(repo_fd)
-            return await r.executor.run([*GIT, *args], cwd=str(root), cwd_fd=fd)
+            return await r.run([*GIT, *args], cwd=str(root), cwd_fd=fd)
         finally:
             os.close(fd)
 
