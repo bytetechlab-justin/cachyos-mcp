@@ -1,0 +1,15 @@
+# Administrator-owned policy; MCP tools cannot modify this project or client policies.
+allowed_project_directories = ["~/Projects"]
+allowed_writable_directories = ["~/Projects", "~/.config", "~/.local"]
+enabled_tool_groups = ["system", "hardware", "processes", "network", "packages", "systemd", "journal", "filesystem", "kde", "development", "privileged"]
+privileged_enabled = false
+allowed_packages = ["blender"]
+allowed_services = ["bluetooth.service"]
+max_command_timeout = 30
+max_output_size = 65536
+max_file_size = 262144
+logging_level = "INFO"
+# Inside this project, under your home directory; excluded from Git and MCP file tools.
+log_directory = "~/Projects/cachyos-mcp/.state"
+log_max_bytes = 1048576
+log_backups = 3
