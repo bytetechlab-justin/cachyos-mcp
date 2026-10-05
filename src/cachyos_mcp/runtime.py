@@ -25,7 +25,7 @@ class Runtime:
             async def wrapped(*args, **kwargs):
                 started = time.monotonic()
                 bound = inspect.signature(fn).bind(*args, **kwargs)
-                sanitized = {k: v for k, v in bound.arguments.items() if k in AUDIT_FIELDS and isinstance(v, (bool, int))}
+                sanitized = {k: v if k in AUDIT_FIELDS and isinstance(v, (bool, int)) else '[redacted]' for k, v in bound.arguments.items()}
                 # Write an intent event before any side effects; fail closed on audit failure.
                 self.audit.record(tool=fn.__name__, arguments=sanitized, permission_level=level, event='start')
                 try:
@@ -51,4 +51,6 @@ class Runtime:
         return [command[0], *[arg if arg.startswith('--') and '=' not in arg else '[argument]' for arg in command[1:]]]
 
     async def run(self, argv, **kwargs):
-        return await self.executor.run(argv, **kwargs)
+        result = await self.executor.run(argv, **kwargs)
+        self.audit.record(event='command', command=self.safe_command(argv), success=result['success'], exit_code=result['exit_code'], duration_ms=result['duration_ms'])
+        return result
