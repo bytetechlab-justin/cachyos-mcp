@@ -6,7 +6,7 @@ from mcp.server import MCPServer
 from .config import load
 from .runtime import Runtime
 
-MODULES = ['system']
+MODULES = ['system', 'hardware', 'processes', 'network', 'packages', 'systemd', 'journal']
 
 def create_server(settings=None):
     if os.geteuid() == 0:
