@@ -157,3 +157,66 @@ def test_gemini_client_status(tmp_path, monkeypatch, contents, expected):
     directory.mkdir()
     (directory / "settings.json").write_text(contents)
     assert expected in SettingsWindow.client_status()
+
+
+def test_tray_close_preserves_unsaved_changes(app, policy, monkeypatch):
+    from PySide6.QtWidgets import QSystemTrayIcon
+
+    from cachyos_mcp.gui.tray import SettingsTray
+
+    monkeypatch.setattr(QSystemTrayIcon, "isSystemTrayAvailable", lambda: True)
+    monkeypatch.setattr(QSystemTrayIcon, "show", lambda self: None)
+    monkeypatch.setattr(QSystemTrayIcon, "isVisible", lambda self: True)
+    window = SettingsWindow(policy)
+    tray = SettingsTray(window)
+    window.fields["max_command_timeout"].setValue(61)
+    window.show()
+    monkeypatch.setattr(
+        window, "discard_ok", lambda: pytest.fail("Hiding must not discard a draft")
+    )
+    window.close()
+    assert not window.isVisible()
+    assert window.dirty()
+    assert window.fields["max_command_timeout"].value() == 61
+    tray.activated(QSystemTrayIcon.ActivationReason.Trigger)
+    assert window.isVisible()
+    window.quitting = True
+    window.close()
+    app.setQuitOnLastWindowClosed(True)
+
+
+def test_tray_quit_can_be_cancelled(app, policy, monkeypatch):
+    from PySide6.QtWidgets import QSystemTrayIcon
+
+    from cachyos_mcp.gui.tray import SettingsTray
+
+    monkeypatch.setattr(QSystemTrayIcon, "isSystemTrayAvailable", lambda: False)
+    window = SettingsWindow(policy)
+    tray = SettingsTray(window)
+    window.fields["max_command_timeout"].setValue(62)
+    monkeypatch.setattr(window, "discard_ok", lambda: False)
+    called = []
+    monkeypatch.setattr(app, "quit", lambda: called.append(True))
+    tray.quit()
+    assert not window.quitting
+    assert window.isVisible()
+    assert not called
+    monkeypatch.setattr(window, "discard_ok", lambda: True)
+    tray.quit()
+    assert window.quitting
+    assert called == [True]
+
+
+def test_no_tray_uses_normal_close(app, policy, monkeypatch):
+    from PySide6.QtWidgets import QSystemTrayIcon
+
+    from cachyos_mcp.gui.tray import SettingsTray
+
+    monkeypatch.setattr(QSystemTrayIcon, "isSystemTrayAvailable", lambda: False)
+    window = SettingsWindow(policy)
+    tray = SettingsTray(window)
+    assert not tray.available()
+    window.show()
+    window.close()
+    assert not window.isVisible()
+    assert app.quitOnLastWindowClosed()

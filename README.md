@@ -37,6 +37,16 @@ Open **CachyOS Agent Settings** from KDE’s application menu, or run:
 ~/Projects/cachyos-mcp/scripts/settings.sh
 ```
 
+The app now stays available in KDE’s **system tray** while running. Click its icon to open settings, or right-click for **Open settings**, **Hide settings window**, **Open documentation**, and **Quit**. Closing the settings window hides it to the tray and retains any unsaved draft. Quit is the explicit exit action and asks before discarding changes. If the desktop has no tray, the app uses normal window-close behavior.
+
+To launch directly into the tray:
+
+```sh
+~/Projects/cachyos-mcp/scripts/settings.sh --tray
+```
+
+This option shows the normal window if a tray is unavailable. Start the app once per desktop session; login autostart is not configured. The tray manages the settings app; MCP clients continue to launch their own agent processes.
+
 The native Qt app is installed with optional dependencies `PySide6` and `tomlkit`. It edits every policy setting through five pages: Overview, Allowed folders, Permissions & tools, Execution limits, and Logging. Folder pickers and manual path entry maintain project/writable roots; permissions include tool-group switches, user-change and privileged-operation switches, and package/service allowlists. The **Read-only draft** button disables both types of changes while retaining your diagnostic groups. Existing sudo and fixed server safety boundaries remain in force.
 
 Changes stay in a draft until you choose **Save settings…** and review the proposed TOML diff. The app uses the server’s validated configuration model, preserves TOML comments, writes atomically, and checks the originally loaded file to detect external edits. Invalid package/service names, folder roots, log paths and limits are rejected. Missing service suffixes must be entered as full names such as `bluetooth.service`. Policies and backup paths cannot be symlinks; policy files with multiple hardlinks are rejected.
@@ -204,3 +214,5 @@ To add a tool, use a focused module and `@runtime.tool('group', level)` with con
 The settings-app milestone passed **62 tests**, including all prior agent checks, GUI control coverage, validation, permission gating, comment preservation, save/reload/import behavior, backup rotation, symlink rejection and external-edit conflicts.
 
 The Gemini integration milestone passed **68 tests**, including registration-status handling and protection of Gemini settings/authentication paths. The installed CLI version and configuration were verified; its live health check is pending the user’s interactive sign-in and folder trust.
+
+The tray milestone passed **71 tests**. Live KDE verification confirmed StatusNotifier registration, close-to-tray and click-to-open without modifying policy.

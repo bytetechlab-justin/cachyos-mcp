@@ -38,6 +38,7 @@ from PySide6.QtWidgets import (
 
 from ..config import GROUPS, PROJECT, Settings
 from .store import backups, read_snapshot, render, save
+from .tray import SettingsTray
 from .widgets import FolderList
 
 GROUP_DESCRIPTIONS = {
@@ -81,6 +82,8 @@ def label(text):
 class SettingsWindow(QMainWindow):
     def __init__(self, path: Path):
         super().__init__()
+        self.tray = None
+        self.quitting = False
         self.snapshot = read_snapshot(path)
         self.loading = True
         self.fields = {}
@@ -590,7 +593,15 @@ class SettingsWindow(QMainWindow):
         return "Client configuration (not a live connection check):\n" + "\n".join(status)
 
     def closeEvent(self, event):
-        event.accept() if self.discard_ok() else event.ignore()
+        if self.quitting:
+            event.accept()
+        elif self.tray is not None and self.tray.available():
+            self.hide()
+            event.ignore()
+        else:
+            # If the desktop tray disappears, normal close/exit remains accessible.
+            QApplication.instance().setQuitOnLastWindowClosed(True)
+            event.accept() if self.discard_ok() else event.ignore()
 
 
 def main():
@@ -598,6 +609,9 @@ def main():
         description="Maintain CachyOS MCP agent policy using a native GUI"
     )
     parser.add_argument("--config", type=Path, default=PROJECT / "config/settings.toml")
+    parser.add_argument(
+        "--tray", action="store_true", help="Start in the system tray when available"
+    )
     args = parser.parse_args()
     if os.geteuid() == 0:
         parser.error("Run the settings app as your regular user, not root")
@@ -611,7 +625,9 @@ def main():
     except (ValueError, OSError) as error:
         QMessageBox.critical(None, "Cannot open agent settings", str(error))
         return 1
-    window.show()
+    tray = SettingsTray(window)
+    if not args.tray or not tray.available():
+        window.show()
     return app.exec()
 
 
