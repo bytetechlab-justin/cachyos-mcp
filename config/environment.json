@@ -1,0 +1,36 @@
+{
+  "host_os": "CachyOS",
+  "kernel": "7.2.9-1-cachyos",
+  "python": "3.14.7",
+  "mcp_sdk": "2.3.0",
+  "tools": {
+    "pacman": "/usr/bin/pacman",
+    "systemctl": "/usr/bin/systemctl",
+    "journalctl": "/usr/bin/journalctl",
+    "sensors": "/usr/bin/sensors",
+    "nvidia-smi": "/usr/bin/nvidia-smi",
+    "lspci": "/usr/bin/lspci",
+    "lsusb": "/usr/bin/lsusb",
+    "ip": "/usr/bin/ip",
+    "ss": "/usr/bin/ss",
+    "lscpu": "/usr/bin/lscpu",
+    "findmnt": "/usr/bin/findmnt",
+    "ps": "/usr/bin/ps",
+    "systemd-analyze": "/usr/bin/systemd-analyze",
+    "plasmashell": "/usr/bin/plasmashell",
+    "qmlformat": "/usr/bin/qmlformat",
+    "qmllint": "/usr/bin/qmllint",
+    "kpackagetool6": "/usr/bin/kpackagetool6",
+    "desktop-file-validate": "/usr/bin/desktop-file-validate",
+    "paru": "/usr/bin/paru",
+    "yay": "/usr/bin/yay"
+  },
+  "clients": {
+    "claude": "2.1.287",
+    "codex": "0.160.0"
+  },
+  "plasma": "6.7.5",
+  "gpu": "NVIDIA GeForce RTX 5080",
+  "driver": "615.71.09",
+  "execution": "Host native server, launched through flatpak-spawn when inside VS Code Flatpak"
+}

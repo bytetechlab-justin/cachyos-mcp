@@ -1,0 +1,1717 @@
+[
+  {
+    "name": "create_desktop_entry",
+    "description": "Create a new KDE application launcher after approving its executable and arguments.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "executable": {
+          "title": "Executable",
+          "type": "string"
+        },
+        "arguments": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Arguments",
+          "type": "array"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        },
+        "display_name": {
+          "default": "CachyOS Application",
+          "title": "Display Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "executable",
+        "arguments",
+        "confirmed"
+      ],
+      "title": "create_desktop_entryArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "create_desktop_entryDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "create_directory",
+    "description": "Create a new private directory inside writable roots.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path",
+        "confirmed"
+      ],
+      "title": "create_directoryArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "create_directoryDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "create_file",
+    "description": "Create a new file inside writable roots after user approval; never overwrite.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "content": {
+          "title": "Content",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path",
+        "content",
+        "confirmed"
+      ],
+      "title": "create_fileArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "create_fileDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "create_plasma_widget_project",
+    "description": "Create a Plasma 6 CPU/GPU temperature widget project; does not install or alter the desktop.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        },
+        "cpu_sensor": {
+          "default": "cpu/all/averageTemperature",
+          "title": "Cpu Sensor",
+          "type": "string"
+        },
+        "gpu_sensor": {
+          "default": "gpu/gpu0/temperature",
+          "title": "Gpu Sensor",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "name",
+        "confirmed"
+      ],
+      "title": "create_plasma_widget_projectArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "create_plasma_widget_projectDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "create_script",
+    "description": "Create a private executable script; this tool does not execute it.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "content": {
+          "title": "Content",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path",
+        "content",
+        "confirmed"
+      ],
+      "title": "create_scriptArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "create_scriptDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "create_symlink",
+    "description": "Create a new symlink to an existing approved writable target. File tools never follow links.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "target": {
+          "title": "Target",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path",
+        "target",
+        "confirmed"
+      ],
+      "title": "create_symlinkArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "create_symlinkDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "create_systemd_user_service",
+    "description": "Create a new cachyos-mcp-NAME.service; does not enable or start it.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "executable": {
+          "title": "Executable",
+          "type": "string"
+        },
+        "arguments": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Arguments",
+          "type": "array"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        },
+        "description": {
+          "default": "CachyOS MCP managed application",
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "executable",
+        "arguments",
+        "confirmed"
+      ],
+      "title": "create_systemd_user_serviceArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "create_systemd_user_serviceDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "disable_service",
+    "description": "Disable one administrator-allowlisted system service with enabled policy, confirmation, and authenticated sudo.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "confirmed"
+      ],
+      "title": "disable_serviceArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "disable_serviceDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "disable_systemd_user_service",
+    "description": "Disable an approved cachyos-mcp-* user service after confirmation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "confirmed"
+      ],
+      "title": "disable_systemd_user_serviceArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "disable_systemd_user_serviceDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "edit_file",
+    "description": "Replace approved file contents atomically, keeping a private backup first.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "content": {
+          "title": "Content",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path",
+        "content",
+        "confirmed"
+      ],
+      "title": "edit_fileArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "edit_fileDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "enable_service",
+    "description": "Enable one administrator-allowlisted system service with enabled policy, confirmation, and authenticated sudo.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "confirmed"
+      ],
+      "title": "enable_serviceArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "enable_serviceDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "enable_systemd_user_service",
+    "description": "Enable an approved cachyos-mcp-* user service after confirmation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "confirmed"
+      ],
+      "title": "enable_systemd_user_serviceArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "enable_systemd_user_serviceDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "find_process",
+    "description": "Find process names containing a literal case-insensitive substring.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "limit": {
+          "default": 100,
+          "title": "Limit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "find_processArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "find_processDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_boot_errors",
+    "description": "Errors and more severe journal messages for a boot.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "default": 100,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "boot": {
+          "default": 0,
+          "title": "Boot",
+          "type": "integer"
+        }
+      },
+      "title": "get_boot_errorsArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_boot_errorsDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_boot_time",
+    "description": "Boot timing summary and units delaying startup.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_boot_timeArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_boot_timeDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_cpu_info",
+    "description": "CPU topology and features, using lscpu JSON.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_cpu_infoArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_cpu_infoDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_disk_usage",
+    "description": "Usage of the root and home filesystems in bytes.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_disk_usageArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_disk_usageDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_environment_info",
+    "description": "Only desktop/session metadata; never dump the full environment.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_environment_infoArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_environment_infoDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_gpu_info",
+    "description": "PCI hardware and driver bindings (includes all graphics devices).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_gpu_infoArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_gpu_infoDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_kde_info",
+    "description": "Plasma version and standard configuration/package paths.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_kde_infoArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_kde_infoDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_kernel_info",
+    "description": "Kernel name, version, and release.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_kernel_infoArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_kernel_infoDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_listening_ports",
+    "description": "TCP/UDP listeners and visible owning processes, optionally filtered by port.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "port": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Port"
+        }
+      },
+      "title": "get_listening_portsArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_listening_portsDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_memory_info",
+    "description": "RAM and swap amounts in bytes, from host /proc/meminfo.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_memory_infoArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_memory_infoDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_mounts",
+    "description": "Host mounted filesystems as findmnt JSON.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_mountsArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_mountsDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_network_info",
+    "description": "Host routing table as JSON.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_network_infoArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_network_infoDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_network_interfaces",
+    "description": "Interfaces, addresses, and link states as ip JSON.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_network_interfacesArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_network_interfacesDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_nvidia_status",
+    "description": "NVIDIA GPUs, driver, temperature, utilization, and VRAM usage.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_nvidia_statusArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_nvidia_statusDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_package_info",
+    "description": "Installed (-Qi) or repository (-Si) package metadata.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "installed": {
+          "default": true,
+          "title": "Installed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "get_package_infoArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_package_infoDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_plasma_version",
+    "description": "Installed Plasma version from host package metadata, without launching the desktop shell.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_plasma_versionArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_plasma_versionDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_process_details",
+    "description": "Selected /proc process status; no command line or environment secrets.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "pid": {
+          "title": "Pid",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "pid"
+      ],
+      "title": "get_process_detailsArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_process_detailsDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_service_status",
+    "description": "Selected service properties, excluding environment and command-line secrets.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "user": {
+          "default": false,
+          "title": "User",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "get_service_statusArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_service_statusDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_system_info",
+    "description": "Host OS release, architecture, hostname, and Python version.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_system_infoArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_system_infoDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_temperatures",
+    "description": "lm-sensors JSON readings; combine with get_nvidia_status for NVIDIA temperature.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_temperaturesArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_temperaturesDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "get_user_info",
+    "description": "Current unprivileged identity and groups.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "get_user_infoArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "get_user_infoDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "git_add",
+    "description": "Stage explicitly named regular project files; no directories, traversal, or pathspec magic.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "files": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Files",
+          "type": "array"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path",
+        "files",
+        "confirmed"
+      ],
+      "title": "git_addArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "git_addDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "git_commit",
+    "description": "Commit already staged changes; hooks/signing are disabled and user identity must exist.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path",
+        "message",
+        "confirmed"
+      ],
+      "title": "git_commitArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "git_commitDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "git_diff",
+    "description": "Working tree diff with external diff programs and text conversion disabled.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "git_diffArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "git_diffDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "git_init",
+    "description": "Initialize Git in an existing approved project directory.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path",
+        "confirmed"
+      ],
+      "title": "git_initArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "git_initDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "git_log",
+    "description": "Recent commits inside an approved project.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "limit": {
+          "default": 20,
+          "title": "Limit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "git_logArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "git_logDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "git_status",
+    "description": "Git status inside an approved project, with hooks and fsmonitor disabled.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "git_statusArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "git_statusDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "inspect_path",
+    "description": "Inspect metadata of an approved diagnostic path without following symlinks.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "inspect_pathArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "inspect_pathDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "inspect_plasma_configuration",
+    "description": "Inspect groups and setting names in known Plasma configuration, without changing it.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "filename": {
+          "default": "kdeglobals",
+          "title": "Filename",
+          "type": "string"
+        }
+      },
+      "title": "inspect_plasma_configurationArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "inspect_plasma_configurationDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "install_package",
+    "description": "Install one administrator-allowlisted official repository package and its dependencies; requires enabled policy, explicit approval, and sudo authentication.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "confirmed"
+      ],
+      "title": "install_packageArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "install_packageDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "list_failed_services",
+    "description": "Failed system or user services as systemctl JSON.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "default": false,
+          "title": "User",
+          "type": "boolean"
+        }
+      },
+      "title": "list_failed_servicesArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "list_failed_servicesDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "list_installed_packages",
+    "description": "Installed package names and versions; optional literal substring filter.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Query"
+        },
+        "limit": {
+          "default": 200,
+          "title": "Limit",
+          "type": "integer"
+        }
+      },
+      "title": "list_installed_packagesArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "list_installed_packagesDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "list_pci_devices",
+    "description": "Enumerate PCI devices and bound kernel drivers.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "list_pci_devicesArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "list_pci_devicesDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "list_processes",
+    "description": "Top processes by CPU; omit command lines that can contain secrets.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "default": 100,
+          "title": "Limit",
+          "type": "integer"
+        }
+      },
+      "title": "list_processesArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "list_processesDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "list_running_services",
+    "description": "Running system or user services as systemctl JSON.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "default": false,
+          "title": "User",
+          "type": "boolean"
+        }
+      },
+      "title": "list_running_servicesArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "list_running_servicesDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "list_usb_devices",
+    "description": "Enumerate USB devices.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "title": "list_usb_devicesArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "list_usb_devicesDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "read_file",
+    "description": "Read a bounded, UTF-8, non-sensitive regular file in diagnostic roots.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "read_fileArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "read_fileDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "read_journal",
+    "description": "Bounded journal entries. Logs may contain sensitive application messages; review sharing.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "limit": {
+          "default": 100,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "boot": {
+          "default": 0,
+          "title": "Boot",
+          "type": "integer"
+        },
+        "priority": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Priority"
+        },
+        "user": {
+          "default": false,
+          "title": "User",
+          "type": "boolean"
+        }
+      },
+      "title": "read_journalArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "read_journalDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "remove_package",
+    "description": "Remove one allowlisted package without cascading or recursive dependency removal.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "confirmed"
+      ],
+      "title": "remove_packageArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "remove_packageDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "restart_service",
+    "description": "Restart one administrator-allowlisted system service with enabled policy, confirmation, and authenticated sudo.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "confirmed"
+      ],
+      "title": "restart_serviceArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "restart_serviceDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "restart_systemd_user_service",
+    "description": "Restart an approved cachyos-mcp-* user service after confirmation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "confirmed"
+      ],
+      "title": "restart_systemd_user_serviceArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "restart_systemd_user_serviceDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "search_packages",
+    "description": "Search configured official repositories without refreshing databases.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "title": "Query",
+          "type": "string"
+        },
+        "limit": {
+          "default": 100,
+          "title": "Limit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "title": "search_packagesArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "search_packagesDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": true,
+      "destructiveHint": false,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "start_service",
+    "description": "Start one administrator-allowlisted system service with enabled policy, confirmation, and authenticated sudo.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "confirmed"
+      ],
+      "title": "start_serviceArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "start_serviceDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "start_systemd_user_service",
+    "description": "Start an approved cachyos-mcp-* user service after confirmation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "confirmed"
+      ],
+      "title": "start_systemd_user_serviceArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "start_systemd_user_serviceDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "stop_service",
+    "description": "Stop one administrator-allowlisted system service with enabled policy, confirmation, and authenticated sudo.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "confirmed"
+      ],
+      "title": "stop_serviceArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "stop_serviceDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  },
+  {
+    "name": "stop_systemd_user_service",
+    "description": "Stop an approved cachyos-mcp-* user service after confirmation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "confirmed": {
+          "title": "Confirmed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "confirmed"
+      ],
+      "title": "stop_systemd_user_serviceArguments"
+    },
+    "outputSchema": {
+      "additionalProperties": true,
+      "title": "stop_systemd_user_serviceDictOutput",
+      "type": "object"
+    },
+    "annotations": {
+      "readOnlyHint": false,
+      "destructiveHint": true,
+      "openWorldHint": false
+    }
+  }
+]
