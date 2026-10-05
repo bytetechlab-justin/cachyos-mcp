@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=CachyOS Agent Settings
+Comment=Manage MCP agent permissions, allowed folders, limits and logging
+Exec=/home/justin/Projects/cachyos-mcp/scripts/settings.sh
+Icon=preferences-system
+Terminal=false
+Categories=Settings;
+Keywords=MCP;Agent;Permissions;CachyOS;
+StartupNotify=true

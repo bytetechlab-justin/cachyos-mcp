@@ -5,3 +5,7 @@ __pycache__/
 .ruff_cache/
 *.egg-info/
 dist/
+
+config/.settings-backups/
+config/.settings.lock
+config/.settings-*.tmp

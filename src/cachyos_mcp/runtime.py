@@ -28,7 +28,9 @@ class Runtime:
 
     def tool(self, group, level=1):
         def decorate(fn):
-            if group not in self.settings.enabled_tool_groups:
+            if group not in self.settings.enabled_tool_groups or (
+                level == 2 and not self.settings.user_changes_enabled
+            ):
                 return fn
 
             self.signatures[fn.__name__] = (inspect.signature(fn), level)

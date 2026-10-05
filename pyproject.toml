@@ -11,9 +11,14 @@ dependencies = ["mcp==2.3.0", "pydantic>=2.13,<3"]
 
 [project.optional-dependencies]
 dev = ["pytest>=9,<10", "pytest-asyncio>=1.4,<2", "ruff>=0.16,<0.17"]
+gui = [
+    "pyside6>=6.8,<7",
+    "tomlkit>=0.13,<1",
+]
 
 [project.scripts]
 cachyos-system = "cachyos_mcp.server:main"
+cachyos-settings = "cachyos_mcp.gui.app:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/cachyos_mcp"]

@@ -42,3 +42,18 @@ async def test_strict_inputs_and_disabled_groups(tmp_path):
         listed = await client.list_tools()
         assert all(t.name.startswith("get_") for t in listed.tools)
         assert not any(t.name == "install_package" for t in listed.tools)
+
+
+async def test_user_change_permission_gate(tmp_path):
+    async with Client(
+        create_server(Settings(log_directory=str(tmp_path), user_changes_enabled=False))
+    ) as client:
+        result = await client.list_tools()
+        names = {tool.name for tool in result.tools}
+        assert "inspect_path" in names
+        assert "get_service_status" in names
+        assert "create_file" not in names
+        assert "create_systemd_user_service" not in names
+        assert "git_commit" not in names
+        result = await client.call_tool("install_package", {"name": "blender", "confirmed": True})
+        assert not result.structured_content["success"]

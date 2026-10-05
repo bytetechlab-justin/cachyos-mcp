@@ -27,6 +27,7 @@ class Settings(BaseModel):
         default_factory=lambda: ["~/Projects", "~/.config", "~/.local"]
     )
     enabled_tool_groups: list[str] = Field(default_factory=lambda: sorted(GROUPS))
+    user_changes_enabled: bool = True
     privileged_enabled: bool = False
     allowed_packages: list[str] = Field(default_factory=lambda: ["blender"])
     allowed_services: list[str] = Field(default_factory=lambda: ["bluetooth.service"])
@@ -37,6 +38,33 @@ class Settings(BaseModel):
     log_directory: str = str(PROJECT / ".state")
     log_max_bytes: int = Field(default=1048576, ge=1024, le=10485760)
     log_backups: int = Field(default=3, ge=1, le=10)
+
+    @field_validator("allowed_packages")
+    @classmethod
+    def packages(cls, values):
+        from .security import package
+
+        for value in values:
+            package(value)
+        return values
+
+    @field_validator("allowed_services")
+    @classmethod
+    def services(cls, values):
+        from .security import service
+
+        for value in values:
+            if service(value) != value:
+                raise ValueError("Use full service names ending in .service")
+        return values
+
+    @field_validator("log_directory")
+    @classmethod
+    def log_path(cls, value):
+        p = Path(value).expanduser()
+        if not p.is_absolute() or ".." in p.parts or p == Path("/"):
+            raise ValueError("Audit folder must be an absolute path without traversal")
+        return value
 
     @field_validator("enabled_tool_groups")
     @classmethod

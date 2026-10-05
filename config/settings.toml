@@ -2,6 +2,8 @@
 allowed_project_directories = ["~/Projects"]
 allowed_writable_directories = ["~/Projects", "~/.config", "~/.local"]
 enabled_tool_groups = ["system", "hardware", "processes", "network", "packages", "systemd", "journal", "filesystem", "kde", "development", "privileged"]
+# Disable to hide all user-level mutation tools while keeping diagnostic tools.
+user_changes_enabled = true
 privileged_enabled = false
 allowed_packages = ["blender"]
 allowed_services = ["bluetooth.service"]

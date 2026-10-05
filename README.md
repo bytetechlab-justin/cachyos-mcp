@@ -16,18 +16,36 @@ Already installed. To recreate the environment from a **host terminal**:
 
 ```sh
 cd ~/Projects/cachyos-mcp
-uv sync --locked --extra dev
+uv sync --locked --extra dev --extra gui
 .venv/bin/pytest -q
 .venv/bin/ruff check src tests scripts
 .venv/bin/ruff format --check src tests scripts
 .venv/bin/python scripts/smoke_test.py
 ```
 
-Inside Flatpak, prefix host commands with `flatpak-spawn --host` and use absolute paths. Without uv, create the environment with host `python -m venv .venv` and install `-e '.[dev]'` using pip; `uv sync --locked` is the reproducible option. Runtime installations can omit `--extra dev`.
+Inside Flatpak, prefix host commands with `flatpak-spawn --host` and use absolute paths. Without uv, create the environment with host `python -m venv .venv` and install `-e '.[dev]'` using pip; `uv sync --locked` is the reproducible option. Runtime installations can omit `--extra dev`; keep `--extra gui` to use the settings app.
 
 The launcher starts a stdio server and waits for an MCP client. It does not serve an HTTP port or install a background service. stdout belongs exclusively to MCP; server diagnostics go to stderr, and administration audit events go to disk. The server refuses to run as root.
 
 Required Python dependencies are in [pyproject.toml](pyproject.toml) and [uv.lock](uv.lock). Native utilities include `pacman`, `systemctl`, `journalctl`, `systemd-analyze`, `lscpu`, `findmnt`, `ps`, `ip`, `ss`, `lspci`, `lsusb`, `sensors`, and `nvidia-smi`. Generated KDE artifacts were also checked with `desktop-file-validate`, `systemd-analyze --user verify`, and `qmlformat`. Missing utilities return `missing_executable` with a useful hint; nothing installs them automatically.
+
+## Desktop settings application
+
+Open **CachyOS Agent Settings** from KDE’s application menu, or run:
+
+```sh
+~/Projects/cachyos-mcp/scripts/settings.sh
+```
+
+The native Qt app is installed with optional dependencies `PySide6` and `tomlkit`. It edits every policy setting through five pages: Overview, Allowed folders, Permissions & tools, Execution limits, and Logging. Folder pickers and manual path entry maintain project/writable roots; permissions include tool-group switches, user-change and privileged-operation switches, and package/service allowlists. The **Read-only draft** button disables both types of changes while retaining your diagnostic groups. Existing sudo and fixed server safety boundaries remain in force.
+
+Changes stay in a draft until you choose **Save settings…** and review the proposed TOML diff. The app uses the server’s validated configuration model, preserves TOML comments, writes atomically, and checks the originally loaded file to detect external edits. Invalid package/service names, folder roots, log paths and limits are rejected. Missing service suffixes must be entered as full names such as `bluetooth.service`. Policies and backup paths cannot be symlinks; policy files with multiple hardlinks are rejected.
+
+The five most recent pre-save versions are stored with private permissions in `config/.settings-backups/`, excluded from Git. **Restore backup…** and **Import policy…** load a draft for review; they never immediately replace the live policy. **Export draft…** writes a new TOML file and refuses to overwrite an existing file. **Reload from disk** discards a draft only after confirmation. **Secure defaults** stages the original default policy, including disabled privileges; it does not automatically save.
+
+Restart Claude Code and Codex after a save so they reload the policy. The Overview displays client registration from their configuration files, not a live connection status. Client authentication, approval preferences and client-side timeouts remain owned by those clients and are not rewritten by the settings app. To edit an alternate policy, pass `--config /absolute/settings.toml` to the launcher.
+
+The menu launcher is installed at `~/.local/share/applications/cachyos-agent-settings.desktop`; its source is [config/cachyos-agent-settings.desktop](config/cachyos-agent-settings.desktop). The Flatpak launcher runs the app on the host with a clean Qt plugin environment and the workstation’s Wayland platform. Both offscreen GUI tests and a real KDE Wayland window were verified without changing live permissions. GUI tests use temporary policy files; install the `gui` extra to run them.
 
 ## Client connections
 
@@ -65,6 +83,8 @@ Policy lives in [config/settings.toml](config/settings.toml). The user edits pol
 | 2 | File creation/editing, scripts, directories, constrained symlinks, launcher/widget generation, managed user services, Git init/add/commit | Explicit user approval followed by strict JSON `confirmed: true`; writable/project allowlists |
 | 3 | Install/remove approved official packages; enable/disable/start/stop/restart approved system services | Level 2 confirmation plus administrator `privileged_enabled = true`, exact allowlists, and authenticated `sudo -n` |
 
+**User-level changes can be disabled separately with `user_changes_enabled = false`.** For read-only administration, also leave `privileged_enabled = false`; tool groups can remain enabled for diagnostics.
+
 **Privileged operations default to disabled.** Only `blender` and `bluetooth.service` are initially allowlisted. To intentionally use these tools, manually enable `privileged_enabled`, review the package/service allowlists, and restart the client. Installation uses `pacman -S --needed --noconfirm --noprogressbar` after explicit approval, including any required dependencies. Removal uses `-R`, without recursive or cascading removal. No AUR helper runs as root and package databases are not automatically refreshed.
 
 Authentication remains governed by existing sudo policy. The server never collects passwords, presents an unrestricted root command interface, modifies sudoers, or enables passwordless sudo. If noninteractive authentication fails, it returns `authentication_required`; use a host terminal to authenticate or perform the exact displayed action there. A cached `sudo -v` may not apply under policies that bind credentials to a TTY. Do not weaken that policy to accommodate MCP.
@@ -78,6 +98,7 @@ Configuration controls:
 | `allowed_project_directories` | `~/Projects`; Git and generated widget projects must be within these roots |
 | `allowed_writable_directories` | `~/Projects`, `~/.config`, `~/.local`; roots must be inside home, not the entire home |
 | `enabled_tool_groups` | system, hardware, processes, network, packages, systemd, journal, filesystem, kde, development, privileged; removed groups are not advertised |
+| `user_changes_enabled` | true; disable to hide all level 2 mutation tools while keeping inspection tools |
 | `privileged_enabled` | false |
 | `allowed_packages`, `allowed_services` | exact, administrator-owned allowlists |
 | `max_command_timeout` | 30 seconds; validated range 1–3600 |
@@ -159,6 +180,8 @@ Formatting, partition changes, raw disk writes/dd, recursive deletion, arbitrary
 
 Tests cover injection and invalid package/service names, traversal and sibling prefixes, protected and allowed paths, parent/leaf symlinks, hardlinks, backups, confirmation and strict MCP types, unknown fields/groups, subprocess timeouts/output bounds, missing executables, audit redaction/rotation, Git filters/metadata links, generated desktop/unit/QML validation, privilege defaults/allowlists/authentication, and real modern/legacy stdio reads. Temporary generated artifacts are tested without changing the live desktop or services. Privileged actions use a fake executor; no privileged OS mutation is used for verification.
 
-Final validation passed **52 automated tests**, lint/format checks, and all smoke checks. The separate smoke script exercises 31 read-only tools over the installed launcher, including every diagnostic category. Git history records phases 1–5 and the final integration milestone, after each phase’s tests passed.
+Initial server validation passed **52 automated tests**, lint/format checks, and all smoke checks. The separate smoke script exercises 31 read-only tools over the installed launcher, including every diagnostic category. Git history records phases 1–5 and the final integration milestone, after each phase’s tests passed.
 
 To add a tool, use a focused module and `@runtime.tool('group', level)` with concrete parameter types, a useful docstring, and `dict[str, Any]` structured output. Validate identifiers and use `runtime.run` for fixed internal argv or `runtime.paths` for files. Add the module to `MODULES`, update group policy if needed, add meaningful security tests, and regenerate the tool schemas/catalog. Level 2/3 mutations need `confirmed: StrictBool` and `security.confirm`; privileged expansion requires a new exact allowlist or a purpose-built validated action, never a model-supplied root command.
+
+The settings-app milestone passed **62 tests**, including all prior agent checks, GUI control coverage, validation, permission gating, comment preservation, save/reload/import behavior, backup rotation, symlink rejection and external-edit conflicts.
