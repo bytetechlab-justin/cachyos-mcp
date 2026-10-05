@@ -10,7 +10,7 @@ class Executor:
     def __init__(self, settings):
         self.settings = settings
 
-    async def run(self, argv: list[str], timeout: int | None = None, cwd: str | None = None) -> dict:
+    async def run(self, argv: list[str], timeout: int | None = None, cwd: str | None = None, cwd_fd: int | None = None) -> dict:
         started = time.monotonic()
         result = {'success': False, 'command': argv, 'exit_code': None, 'stdout': '', 'stderr': '', 'truncated': False}
         if not argv or any(not isinstance(a, str) or '\x00' in a for a in argv):
@@ -40,7 +40,7 @@ class Executor:
                     pass
 
         try:
-            proc = await asyncio.create_subprocess_exec(*argv, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, cwd=cwd, env=env, start_new_session=True)
+            proc = await asyncio.create_subprocess_exec(*argv, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, cwd=f'/proc/self/fd/{cwd_fd}' if cwd_fd is not None else cwd, pass_fds=(cwd_fd,) if cwd_fd is not None else (), env=env, start_new_session=True)
             tasks = [asyncio.create_task(drain(proc.stdout, 0)), asyncio.create_task(drain(proc.stderr, 1))]
             try:
                 async with asyncio.timeout(min(timeout or self.settings.max_command_timeout, self.settings.max_command_timeout)):
