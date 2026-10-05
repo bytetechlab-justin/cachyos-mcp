@@ -1,8 +1,8 @@
 # cachyos-system
 
-A working, local MCP server for inspecting and administering this CachyOS workstation. It uses the **official MCP Python SDK 2.3.0**, with 59 typed, structured tools over stdio. Claude Code and Codex each launch their own process using the same server, policy, and bounded audit log.
+A working, local MCP server for inspecting and administering this CachyOS workstation. It uses the **official MCP Python SDK 2.3.0**, with 59 typed, structured tools over stdio. Claude Code, Codex and Gemini CLI each launch their own process using the same server, policy, and bounded audit log.
 
-The project is installed in `/home/justin/Projects/cachyos-mcp`, with a host Python virtual environment, locked dependencies, automated security tests, real-machine diagnostic probes, and client registrations. Restart Claude Code or Codex to load the new server. Ask, for example, “Check my CPU and GPU temperatures” or “What is listening on port 8080?”
+The project is installed in `/home/justin/Projects/cachyos-mcp`, with a host Python virtual environment, locked dependencies, automated security tests, real-machine diagnostic probes, and client registrations. Restart Claude Code, Codex or Gemini CLI to load the new server. Ask, for example, “Check my CPU and GPU temperatures” or “What is listening on port 8080?”
 
 ## Inspected environment
 
@@ -43,7 +43,7 @@ Changes stay in a draft until you choose **Save settings…** and review the pro
 
 The five most recent pre-save versions are stored with private permissions in `config/.settings-backups/`, excluded from Git. **Restore backup…** and **Import policy…** load a draft for review; they never immediately replace the live policy. **Export draft…** writes a new TOML file and refuses to overwrite an existing file. **Reload from disk** discards a draft only after confirmation. **Secure defaults** stages the original default policy, including disabled privileges; it does not automatically save.
 
-Restart Claude Code and Codex after a save so they reload the policy. The Overview displays client registration from their configuration files, not a live connection status. Client authentication, approval preferences and client-side timeouts remain owned by those clients and are not rewritten by the settings app. To edit an alternate policy, pass `--config /absolute/settings.toml` to the launcher.
+Restart Claude Code, Codex and Gemini CLI after a save so they reload the policy. The Overview displays client registration from their configuration files, not a live connection status. Client authentication, approval preferences and client-side timeouts remain owned by those clients and are not rewritten by the settings app. To edit an alternate policy, pass `--config /absolute/settings.toml` to the launcher.
 
 The menu launcher is installed at `~/.local/share/applications/cachyos-agent-settings.desktop`; its source is [config/cachyos-agent-settings.desktop](config/cachyos-agent-settings.desktop). The Flatpak launcher runs the app on the host with a clean Qt plugin environment and the workstation’s Wayland platform. Both offscreen GUI tests and a real KDE Wayland window were verified without changing live permissions. GUI tests use temporary policy files; install the `gui` extra to run them.
 
@@ -71,7 +71,24 @@ This updates its user `config.toml` (normally `~/.codex/config.toml`, or the con
 
 Remove only this server with `claude mcp remove cachyos-system -s user` or `codex mcp remove cachyos-system`. Re-registering does not require restoring unrelated client settings.
 
-Official references: [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk), [Codex MCP documentation](https://developers.openai.com/codex/mcp), [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp), and [KDE widget setup](https://develop.kde.org/docs/plasma/widget/setup/).
+Gemini CLI 0.62.0 is now installed locally under `.clients/gemini`, pinned by `package.json` and `package-lock.json`. Run `gemini` from a host terminal, or use the Flatpak-safe project launcher:
+
+```sh
+~/Projects/cachyos-mcp/scripts/gemini.sh
+```
+
+On first run, approve this project folder in Gemini’s trust dialog and complete Google sign-in interactively. The agent connection is already registered in `~/.gemini/settings.json` using the installed CLI’s verified syntax:
+
+```sh
+gemini mcp add --scope user --transport stdio --timeout 45000 cachyos-system /home/justin/Projects/cachyos-mcp/scripts/launch.sh
+gemini mcp list
+```
+
+`gemini mcp list` checks the local connection after authentication and folder trust, without launching a model conversation. Registration was verified, but Gemini currently requires interactive authentication and project-folder approval before the live connection check can complete. From a host terminal, run `cd ~/Projects/cachyos-mcp` then `gemini`; choose **Trust folder** for this project rather than trusting an entire parent tree. After signing in, use `/mcp` inside Gemini to inspect available tools. The registration does **not** use `--trust`; Gemini’s normal action confirmations remain enabled, alongside the agent’s path policy, confirmation arguments and privilege boundary. Gemini appears in the settings app’s Overview. Restart it after policy changes. Client settings and authentication files under `~/.gemini` are protected from the agent’s filesystem tools.
+
+[gemini-mcp.json](config/gemini-mcp.json) provides the supported configuration shape. Reinstall the pinned CLI with host `npm ci --prefix ~/Projects/cachyos-mcp/.clients/gemini`. The `~/.local/bin/gemini` launcher forwards to this project without a global npm install or root access. Remove just its agent registration with `gemini mcp remove --scope user cachyos-system`. Google account authentication stays with Gemini and is not handled by this project’s GUI.
+
+Official references: [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk), [Codex MCP documentation](https://developers.openai.com/codex/mcp), [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp), [Gemini CLI MCP documentation](https://geminicli.com/docs/tools/mcp-server/), and [KDE widget setup](https://develop.kde.org/docs/plasma/widget/setup/).
 
 ## Permissions and configuration
 
@@ -185,3 +202,5 @@ Initial server validation passed **52 automated tests**, lint/format checks, and
 To add a tool, use a focused module and `@runtime.tool('group', level)` with concrete parameter types, a useful docstring, and `dict[str, Any]` structured output. Validate identifiers and use `runtime.run` for fixed internal argv or `runtime.paths` for files. Add the module to `MODULES`, update group policy if needed, add meaningful security tests, and regenerate the tool schemas/catalog. Level 2/3 mutations need `confirmed: StrictBool` and `security.confirm`; privileged expansion requires a new exact allowlist or a purpose-built validated action, never a model-supplied root command.
 
 The settings-app milestone passed **62 tests**, including all prior agent checks, GUI control coverage, validation, permission gating, comment preservation, save/reload/import behavior, backup rotation, symlink rejection and external-edit conflicts.
+
+The Gemini integration milestone passed **68 tests**, including registration-status handling and protection of Gemini settings/authentication paths. The installed CLI version and configuration were verified; its live health check is pending the user’s interactive sign-in and folder trust.

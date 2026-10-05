@@ -138,3 +138,22 @@ def test_read_only_draft_keeps_inspection_groups(app, policy, monkeypatch):
     assert "filesystem" in window.validated().enabled_tool_groups
     monkeypatch.setattr(window, "discard_ok", lambda: True)
     window.close()
+
+
+@pytest.mark.parametrize(
+    "contents,expected",
+    [
+        (
+            '{"mcpServers":{"cachyos-system":{"command":"/example/server"}}}',
+            "Gemini CLI: registered",
+        ),
+        ('{"mcpServers":{}}', "Gemini CLI: no user-level registration found"),
+        ("invalid JSON", "Gemini CLI: user registration could not be read"),
+    ],
+)
+def test_gemini_client_status(tmp_path, monkeypatch, contents, expected):
+    monkeypatch.setenv("HOME", str(tmp_path))
+    directory = tmp_path / ".gemini"
+    directory.mkdir()
+    (directory / "settings.json").write_text(contents)
+    assert expected in SettingsWindow.client_status()

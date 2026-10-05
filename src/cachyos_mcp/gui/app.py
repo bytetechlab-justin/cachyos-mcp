@@ -420,7 +420,7 @@ class SettingsWindow(QMainWindow):
         layout = QVBoxLayout(dialog)
         layout.addWidget(
             label(
-                "A private backup is kept before saving. Restart Claude Code and Codex afterward to apply the new policy."
+                "A private backup is kept before saving. Restart Claude Code, Codex and Gemini CLI afterward to apply the new policy."
             )
         )
         if settings.privileged_enabled:
@@ -450,7 +450,7 @@ class SettingsWindow(QMainWindow):
             self.snapshot, backup = save(self.snapshot, settings)
             self.populate(self.snapshot.settings)
             self.status.setText(
-                "Saved. Restart Claude Code and Codex to apply these settings. Backup: "
+                "Saved. Restart Claude Code, Codex and Gemini CLI to apply these settings. Backup: "
                 + str(backup)
             )
         except (ValueError, OSError) as error:
@@ -570,6 +570,7 @@ class SettingsWindow(QMainWindow):
         status = []
         configs = [
             ("Claude Code", Path.home() / ".claude.json"),
+            ("Gemini CLI", Path.home() / ".gemini/settings.json"),
             (
                 "Codex",
                 Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex"))) / "config.toml",

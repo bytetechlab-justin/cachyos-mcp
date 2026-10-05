@@ -9,3 +9,5 @@ dist/
 config/.settings-backups/
 config/.settings.lock
 config/.settings-*.tmp
+
+node_modules/

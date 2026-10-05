@@ -57,6 +57,7 @@ SECRET_PARTS = {
     ".aws",
     ".codex",
     ".claude",
+    ".gemini",
     ".git",
     ".venv",
     "credentials",

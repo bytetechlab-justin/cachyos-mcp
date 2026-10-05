@@ -1,0 +1,9 @@
+{
+  "name": "cachyos-gemini-client",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Pinned official Gemini CLI for the CachyOS MCP agent",
+  "dependencies": {
+    "@google/gemini-cli": "0.62.0"
+  }
+}

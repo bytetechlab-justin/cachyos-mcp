@@ -27,7 +27,8 @@
   },
   "clients": {
     "claude": "2.1.287",
-    "codex": "0.160.0"
+    "codex": "0.160.0",
+    "gemini": "0.62.0"
   },
   "plasma": "6.7.5",
   "gpu": "NVIDIA GeForce RTX 5080",

@@ -123,3 +123,12 @@ def test_custom_audit_and_policy_protected(tmp_path):
     for p in [tmp_path / "logs/audit.jsonl", tmp_path / "policy.toml"]:
         with pytest.raises(Denied):
             paths.checked(str(p), write=True)
+
+
+@pytest.mark.parametrize("name", ["settings.json", "oauth_creds.json", "trustedFolders.json"])
+def test_gemini_client_files_protected(name):
+    paths = Paths(Settings())
+    target = str(Path.home() / ".gemini" / name)
+    for write in (False, True):
+        with pytest.raises(Denied):
+            paths.checked(target, write=write)

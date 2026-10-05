@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "cachyos-system": {
+      "command": "/home/justin/Projects/cachyos-mcp/scripts/launch.sh",
+      "args": [],
+      "timeout": 45000
+    }
+  }
+}
