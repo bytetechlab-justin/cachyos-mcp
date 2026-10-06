@@ -37,7 +37,7 @@ Open **CachyOS Agent Settings** from KDE’s application menu, or run:
 ~/Projects/cachyos-mcp/scripts/settings.sh
 ```
 
-The app now stays available in KDE’s **system tray** while running. Click its icon to open settings, or right-click for **Open settings**, **Hide settings window**, **Open documentation**, and **Quit**. Closing the settings window hides it to the tray and retains any unsaved draft. Quit is the explicit exit action and asks before discarding changes. If the desktop has no tray, the app uses normal window-close behavior.
+The app now stays available in KDE’s **system tray** while running. Click its icon to open settings, or right-click for **Open settings**, **Hide settings window**, **Open documentation**, and **Quit**. The **Open console** submenu launches **Claude Code**, **Gemini CLI**, or **Codex** in a new Konsole window, starting in this agent’s project directory. Sessions remain independent of the settings app, retain normal client authentication/approval prompts, and stay open if the client exits so startup errors are readable. Missing clients or Konsole produce a clear dialog. Quit and reopen an already running tray app after updating its code to load new menu actions. Closing the settings window hides it to the tray and retains any unsaved draft. Quit is the explicit exit action and asks before discarding changes. If the desktop has no tray, the app uses normal window-close behavior.
 
 To launch directly into the tray:
 
@@ -216,3 +216,5 @@ The settings-app milestone passed **62 tests**, including all prior agent checks
 The Gemini integration milestone passed **68 tests**, including registration-status handling and protection of Gemini settings/authentication paths. The installed CLI version and configuration were verified; its live health check is pending the user’s interactive sign-in and folder trust.
 
 The tray milestone passed **71 tests**. Live KDE verification confirmed StatusNotifier registration, close-to-tray and click-to-open without modifying policy.
+
+The tray console milestone passed **76 tests**. Native KDE checks opened each client in Konsole with a version-only command and verified successful terminal exits, without starting model conversations. Console launches use fixed client choices and argv arrays through the central execution layer.

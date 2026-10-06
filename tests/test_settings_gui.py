@@ -220,3 +220,22 @@ def test_no_tray_uses_normal_close(app, policy, monkeypatch):
     window.close()
     assert not window.isVisible()
     assert app.quitOnLastWindowClosed()
+
+
+def test_tray_console_menu_launches_selected_client(app, policy, monkeypatch):
+    from PySide6.QtWidgets import QSystemTrayIcon
+
+    from cachyos_mcp.gui.tray import SettingsTray
+
+    monkeypatch.setattr(QSystemTrayIcon, "isSystemTrayAvailable", lambda: False)
+    window = SettingsWindow(policy)
+    tray = SettingsTray(window)
+    clients = []
+    monkeypatch.setattr(
+        tray.console_launcher, "open", lambda name: clients.append(name) or {"success": True}
+    )
+    for client in ["Claude Code", "Gemini CLI", "Codex"]:
+        tray.console_actions[client].trigger()
+    assert clients == ["Claude Code", "Gemini CLI", "Codex"]
+    assert not window.dirty()
+    window.close()

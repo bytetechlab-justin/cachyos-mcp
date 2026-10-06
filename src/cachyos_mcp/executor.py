@@ -127,3 +127,34 @@ class Executor:
             result["stdout"] = buffers[0].decode("utf-8", errors="replace")
             result["stderr"] = buffers[1].decode("utf-8", errors="replace")
         return result
+
+    def launch_desktop(self, argv: list[str], cwd: str) -> dict:
+        """Detach a human-requested GUI process; never exposed through MCP tools.
+
+        Interactive terminal sessions outlive the settings window and are not
+        subject to diagnostic command timeouts or captured terminal input/output.
+        """
+        if not argv or any(not isinstance(arg, str) or "\x00" in arg for arg in argv):
+            return {"success": False, "error": "invalid_command"}
+        # Optional GUI imports stay out of headless MCP installations.
+        from PySide6.QtCore import QProcess, QProcessEnvironment
+
+        process = QProcess()
+        environment = QProcessEnvironment.systemEnvironment()
+        for key in (
+            "QT_PLUGIN_PATH",
+            "QT_QPA_PLATFORM_PLUGIN_PATH",
+            "QT_QPA_PLATFORM",
+            "PYTHONPATH",
+        ):
+            environment.remove(key)
+        process.setProcessEnvironment(environment)
+        process.setProgram(argv[0])
+        process.setArguments(argv[1:])
+        process.setWorkingDirectory(cwd)
+        started, pid = process.startDetached()
+        return {
+            "success": started,
+            "pid": pid,
+            "error": None if started else "terminal_start_failed",
+        }
