@@ -35,3 +35,6 @@ artifacts/
 
 # Themes are maintained as separate projects, not part of cachyos-mcp
 themes/
+
+# Tests are kept local, not published
+tests/
