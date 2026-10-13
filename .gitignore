@@ -11,3 +11,27 @@ config/.settings.lock
 config/.settings-*.tmp
 
 node_modules/
+
+# AI model weights — not published; users download/build their own on install
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.gguf
+*.onnx
+*.pb
+models/
+checkpoints/
+loras/
+embeddings/
+vae/
+
+# Security-audit artifacts (captures, cracking output) — never publish
+artifacts/
+
+# Local datasets / generated input
+2026_Cities_cleaned.txt
+
+# Themes are maintained as separate projects, not part of cachyos-mcp
+themes/

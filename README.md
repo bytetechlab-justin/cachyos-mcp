@@ -47,7 +47,34 @@ To launch directly into the tray:
 
 This option shows the normal window if a tray is unavailable. Start the app once per desktop session; login autostart is not configured. The tray manages the settings app; MCP clients continue to launch their own agent processes.
 
-The native Qt app is installed with optional dependencies `PySide6` and `tomlkit`. It edits every policy setting through five pages: Overview, Allowed folders, Permissions & tools, Execution limits, and Logging. Folder pickers and manual path entry maintain project/writable roots; permissions include tool-group switches, user-change and privileged-operation switches, and package/service allowlists. The **Read-only draft** button disables both types of changes while retaining your diagnostic groups. Existing sudo and fixed server safety boundaries remain in force.
+### Taskbar usage
+
+Install the **CachyOS Agent Usage** Plasma widget beside the system tray on your bottom panels:
+
+```sh
+~/Projects/cachyos-mcp/scripts/install-usage-widget.sh
+~/Projects/cachyos-mcp/scripts/settings.sh --tray
+```
+
+The installer adds only this widget, skips duplicate placements, and can be rerun to update it. After updating an already loaded widget, restart Plasma’s desktop shell (`systemctl --user restart plasma-plasmashell.service`) to clear cached QML. You can also place it with Plasma’s **Add Widgets** menu. Three plain text columns separated by thin vertical lines show **Codex**, **Claude Code**, and **Gemini CLI**, with **5h** and **7d** percentages **left**. Text adapts to the panel height and stays inside the taskbar; short panels combine both quotas onto one line, with percentages left and a dash for unavailable data. Click an agent’s column to open its CLI in a new Konsole window; the gear opens settings. Right-click a column for **Shut down**, which is enabled while that agent has running processes and shows how many. It sends a terminate request to every process of that CLI owned by your user, including sessions started outside this app, and force-kills any that are still alive three seconds later; the settings app’s own Codex quota poller is left alone, and a Konsole window opened with `--hold` stays open after its client exits. To choose which agents appear, open the settings app’s **Taskbar** page: the three show/hide switches are personal display preferences stored outside the agent policy, so they apply within a few seconds without a save or client restart. Hover for percentages used and left, source status, last report time, and window reset times. The display refreshes every **3 seconds** while the settings app is running; unavailable data is never shown as zero. A `~` marks reports older than 30 seconds. Expired windows become unavailable until a new report arrives.
+
+- **Codex:** a single asynchronous `codex app-server` subprocess reads `account/rateLimits/read` every three seconds using Codex’s existing login. It does not start model conversations. Only actual 300-minute and 10,080-minute windows appear under these labels. Requests never overlap; failures/timeouts back off before retrying.
+- **Claude Code:** click the Claude Code column, or use the settings tray’s **Open console → Claude Code** menu, to open a new Claude console. A session-only status-line bridge forwards the latest quota percentages after Claude responds. The widget refreshes every three seconds, but fresh Claude readings depend on its status-line updates. Your existing status-line command is preserved and saved client settings are not rewritten. Quotas may be absent for unsupported accounts or before the first response. To enable the bridge in an independently launched console, supply the same `--settings` override returned by `cachyos_mcp.gui.consoles.claude_usage_settings()`.
+- **Gemini CLI:** its column reports these windows as unavailable; Gemini’s documented request quotas use other periods, so no 5h/7d percentages are inferred from local token counts.
+
+A separate **RAM Gauge** desktop widget shows memory in use on a dial and reclaims idle memory when clicked:
+
+```bash
+~/Projects/cachyos-mcp/scripts/install-ram-widget.sh
+```
+
+The installer places it once at the top right of the primary desktop and can be rerun to update it. The click needs no root and closes or deletes nothing: it asks the kernel, through the user's own cgroup v2 `memory.reclaim` file, to compress idle pages into swap/zram and release unused file cache, in 256 MiB steps for at most 30 seconds. It does not write `drop_caches`. Files stored in a RAM-backed `/tmp` count as used memory; they are compressed but stay until deleted.
+
+The agent usage widget reads only sanitized quota data through the user’s session D-Bus. Prompts, transcripts, credentials, and raw provider replies are not published. Quit stops the polling subprocess. The widget remains installed, hides its contents while the app is stopped, and reconnects when settings starts again. Restart an already running settings app after updating the code. Other MCP server processes and client consoles keep their existing lifetimes.
+
+Provider references: [Codex account rate limits](https://developers.openai.com/codex/app-server#rate-limits-chatgpt), [Claude status-line quota fields](https://code.claude.com/docs/en/statusline), and [Gemini CLI quotas](https://geminicli.com/docs/resources/quota-and-pricing/).
+
+The native Qt app is installed with optional dependencies `PySide6` and `tomlkit`. It edits every policy setting through five pages: Overview, Allowed folders, Permissions & tools, Execution limits, and Logging. A sixth page, Taskbar, holds the widget’s show/hide preferences. Folder pickers and manual path entry maintain project/writable roots; permissions include tool-group switches, user-change and privileged-operation switches, and package/service allowlists. The **Read-only draft** button disables both types of changes while retaining your diagnostic groups. Existing sudo and fixed server safety boundaries remain in force.
 
 Changes stay in a draft until you choose **Save settings…** and review the proposed TOML diff. The app uses the server’s validated configuration model, preserves TOML comments, writes atomically, and checks the originally loaded file to detect external edits. Invalid package/service names, folder roots, log paths and limits are rejected. Missing service suffixes must be entered as full names such as `bluetooth.service`. Policies and backup paths cannot be symlinks; policy files with multiple hardlinks are rejected.
 

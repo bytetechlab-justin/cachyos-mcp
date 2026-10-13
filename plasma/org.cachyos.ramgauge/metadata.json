@@ -1,0 +1,14 @@
+{
+    "KPlugin": {
+        "Id": "org.cachyos.ramgauge",
+        "Name": "RAM Gauge",
+        "Description": "Desktop gauge of memory in use; click to reclaim idle memory without root",
+        "Icon": "memory",
+        "Version": "1.0.0",
+        "License": "MIT",
+        "Category": "System Information",
+        "Authors": [{"Name": "CachyOS MCP"}]
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

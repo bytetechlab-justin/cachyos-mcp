@@ -9,7 +9,7 @@ import tomllib
 from pathlib import Path
 
 from pydantic import ValidationError
-from PySide6.QtCore import Qt, QUrl
+from PySide6.QtCore import QSettings, Qt, QUrl
 from PySide6.QtGui import QDesktopServices, QIcon
 from PySide6.QtWidgets import (
     QApplication,
@@ -37,8 +37,10 @@ from PySide6.QtWidgets import (
 )
 
 from ..config import GROUPS, PROJECT, Settings
+from .consoles import CLIENTS, AgentVisibility
 from .store import backups, read_snapshot, render, save
 from .tray import SettingsTray
+from .usage import UsageMonitor
 from .widgets import FolderList
 
 GROUP_DESCRIPTIONS = {
@@ -80,9 +82,10 @@ def label(text):
 
 
 class SettingsWindow(QMainWindow):
-    def __init__(self, path: Path):
+    def __init__(self, path: Path, visibility=None):
         super().__init__()
         self.tray = None
+        self.visibility = visibility or AgentVisibility()
         self.quitting = False
         self.snapshot = read_snapshot(path)
         self.loading = True
@@ -105,7 +108,14 @@ class SettingsWindow(QMainWindow):
         self.navigation = QListWidget()
         self.navigation.setFixedWidth(180)
         self.navigation.addItems(
-            ["Overview", "Allowed folders", "Permissions & tools", "Execution limits", "Logging"]
+            [
+                "Overview",
+                "Allowed folders",
+                "Permissions & tools",
+                "Execution limits",
+                "Logging",
+                "Taskbar",
+            ]
         )
         self.pages = QStackedWidget()
         body.addWidget(self.navigation)
@@ -268,6 +278,25 @@ class SettingsWindow(QMainWindow):
         )
         logging.addWidget(open_logs)
         logging.addStretch()
+        taskbar = self.page(
+            "Taskbar",
+            "Choose which agents the CachyOS Agent Usage widget shows. These are personal display preferences, not agent policy: they apply within a few seconds and need no save.",
+        )
+        self.taskbar_agents = {}
+        for client in CLIENTS:
+            checkbox = QCheckBox("Show " + client + " in the taskbar")
+            checkbox.setChecked(self.visibility.visible(client))
+            checkbox.toggled.connect(
+                lambda checked, name=client: self.visibility.set_visible(name, checked)
+            )
+            self.taskbar_agents[client] = checkbox
+            taskbar.addWidget(checkbox)
+        taskbar.addWidget(
+            label(
+                "Hiding an agent only removes its column. Its sessions keep running; right-click a column in the taskbar to shut that agent down."
+            )
+        )
+        taskbar.addStretch()
         self.status = label("")
         self.status.setMinimumHeight(50)
         outer.addWidget(self.status)
@@ -620,12 +649,18 @@ def main():
     app.setOrganizationName("CachyOS MCP")
     app.setDesktopFileName("cachyos-agent-settings")
     app.setWindowIcon(QIcon.fromTheme("preferences-system"))
+    visibility = AgentVisibility(QSettings())
     try:
-        window = SettingsWindow(args.config)
+        window = SettingsWindow(args.config, visibility)
     except (ValueError, OSError) as error:
         QMessageBox.critical(None, "Cannot open agent settings", str(error))
         return 1
     tray = SettingsTray(window)
+    usage = UsageMonitor(
+        tray.show_window, window, open_console=tray.open_console, visibility=visibility
+    )
+    usage.start()
+    app.aboutToQuit.connect(usage.stop)
     if not args.tray or not tray.available():
         window.show()
     return app.exec()

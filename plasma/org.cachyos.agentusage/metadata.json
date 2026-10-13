@@ -1,0 +1,14 @@
+{
+    "KPlugin": {
+        "Id": "org.cachyos.agentusage",
+        "Name": "CachyOS Agent Usage",
+        "Description": "Agent quota columns from CachyOS Agent Settings, refreshed every three seconds",
+        "Icon": "preferences-system",
+        "Version": "1.2.0",
+        "License": "MIT",
+        "Category": "System Information",
+        "Authors": [{"Name": "CachyOS MCP"}]
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

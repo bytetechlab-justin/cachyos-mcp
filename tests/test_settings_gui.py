@@ -239,3 +239,13 @@ def test_tray_console_menu_launches_selected_client(app, policy, monkeypatch):
     assert clients == ["Claude Code", "Gemini CLI", "Codex"]
     assert not window.dirty()
     window.close()
+
+
+def test_taskbar_page_toggles_agents_without_touching_policy(app, policy):
+    window = SettingsWindow(policy)
+    assert window.navigation.count() == window.pages.count()
+    window.taskbar_agents["Codex"].setChecked(False)
+    assert not window.visibility.visible("Codex")
+    assert window.visibility.visible("Claude Code")
+    assert not window.dirty()
+    window.close()
